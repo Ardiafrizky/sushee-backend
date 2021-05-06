@@ -2,7 +2,6 @@ package com.future.sushee.model;
 
 import lombok.*;
 
-import javax.naming.Name;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
@@ -10,7 +9,7 @@ import javax.validation.constraints.NotNull;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name="order")
+@Table(name="orders")
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,11 +23,11 @@ public class Order {
     @Column(name="status", nullable = false)
     private Integer status;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "menu", referencedColumnName = "id")
     private Menu menu;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "reservation", referencedColumnName = "id")
     private Reservation reservation;
 }

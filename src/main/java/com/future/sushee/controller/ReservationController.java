@@ -1,24 +1,21 @@
 package com.future.sushee.controller;
 
 import com.future.sushee.model.Reservation;
-import com.future.sushee.model.User;
-import com.future.sushee.payload.request.LoginRequest;
+import com.future.sushee.model.Seat;
 import com.future.sushee.payload.request.ReservationCreationRequest;
 import com.future.sushee.payload.response.MessageResponse;
-import com.future.sushee.repository.ReservationRepository;
-import com.future.sushee.repository.RoleRepository;
-import com.future.sushee.repository.UserRepository;
-import com.future.sushee.security.jwt.JwtUtils;
 import com.future.sushee.service.ReservationService;
 import com.future.sushee.service.SeatService;
 import com.future.sushee.service.UserService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
+import java.util.List;
+import java.util.NoSuchElementException;
 
 @AllArgsConstructor
 @RestController
@@ -30,25 +27,65 @@ public class ReservationController {
     private final ReservationService reservationService;
     private final SeatService seatService;
 
-    @PostMapping("/add")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody ReservationCreationRequest reservationCreationRequest) {
-//        try {
-            Reservation reservation = new Reservation();
-
-            reservation.setNumberOfPerson(reservationCreationRequest.getNumberOfPerson());
-            reservation.setStartingDateTime(reservationCreationRequest.getStartingDateTime());
-            reservation.setUser(userService.getUserByUsername(reservationCreationRequest.getUsername()));
-            reservation.setStatus(reservationCreationRequest.getStatus());
-            reservation.setTotalPrice(reservationService.calculatePrice(200000, reservationCreationRequest.getNumberOfPerson(), 0.1f));
-
-            if (reservationCreationRequest.getNumberOfPerson() <= seatService.getByNumber(reservationCreationRequest.getSeatNumber()).getCapacity()) {
-                reservation.setSeat(seatService.getByNumber(reservationCreationRequest.getSeatNumber()));
-            } else { throw new RuntimeException("Error: Invalid seat capacity"); }
-
-            reservationService.add(reservation);
-            return ResponseEntity.ok().body(new MessageResponse("Reservation successfully created."));
-//        } catch (Exception exception) {
-//            throw new RuntimeException("Error: Failed creating reservation, \nLog: " + exception.getMessage());
-//        }
+    @GetMapping("")
+    public List<Reservation> getAllReservation() {
+        return reservationService.getAllReservation();
     }
+
+    @GetMapping("/{id}")
+    public Reservation getReservationById(@PathVariable Long id) {
+        try {
+            return reservationService.getById(id);
+        } catch (NoSuchElementException e) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "No such reservation with ID " + String.valueOf(id)
+            );
+        }
+    }
+
+    @PostMapping("/add")
+    public ResponseEntity<?> addReservation(@Valid @RequestBody ReservationCreationRequest reservationCreationRequest) {
+
+        Reservation reservation = new Reservation();
+        Seat seat = seatService.getByNumber(reservationCreationRequest.getSeatNumber());
+
+        reservation.setNumberOfPerson(reservationCreationRequest.getNumberOfPerson());
+        reservation.setUser(userService.getUserByUsername(reservationCreationRequest.getUsername()));
+        reservation.setStatus(reservationCreationRequest.getStatus());
+        reservation.setTotalPrice(reservationService.calculatePrice(200000, reservationCreationRequest.getNumberOfPerson(), 0.1f));
+
+        boolean seatConstraintViolation = false;
+        if (!seat.getAvailable() || reservationCreationRequest.getNumberOfPerson() > seat.getCapacity()) seatConstraintViolation = true;
+
+        if(!seatConstraintViolation) {
+            reservation.setSeat(seat);
+            seat.setAvailable(false);
+        } else { throw new RuntimeException("Error: Seat-Reservation constraint violation (capacity/availability)"); }
+
+        // TODO: IMPLEMENT DATE_CHECKER HERE!
+
+        boolean reserved = false;
+        for(Reservation rsvp : reservationService.getAllReservation()) {
+            if (rsvp.getStartingDateTime().equals(reservationCreationRequest.getStartingDateTime())) {
+
+                // TODO: CHECK WITHIN 90min INTERVAL!
+
+                reserved = true;
+                break;
+            }
+        };
+        if(!reserved) {
+            reservation.setStartingDateTime(reservationCreationRequest.getStartingDateTime());
+        } else { throw new RuntimeException("Error: Booking datetime collision"); }
+
+        reservationService.add(reservation);
+        return ResponseEntity.ok().body(new MessageResponse("Reservation successfully created."));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteReservation(@PathVariable Long id) {
+        reservationService.deleteById(reservationService.getById(id));
+        return ResponseEntity.ok(new MessageResponse("Reservation " + String.valueOf(id) + " successfully deleted"));
+    }
+
 }

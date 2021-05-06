@@ -25,7 +25,10 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    public Reservation delete(Reservation reservation) {
+    public Reservation getById(Long id) { return reservationRepository.findById(id).get(); }
+
+    @Override
+    public Reservation deleteById(Reservation reservation) {
         reservationRepository.delete(reservation);
         return reservation;
     }

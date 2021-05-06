@@ -1,6 +1,5 @@
 package com.future.sushee.security;
 
-import com.future.sushee.security.services.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,6 +16,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import com.future.sushee.security.jwt.AuthEntryPointJwt;
 import com.future.sushee.security.jwt.AuthTokenFilter;
+import com.future.sushee.security.services.UserDetailsServiceImpl;
 
 @Configuration
 @EnableWebSecurity
@@ -57,10 +57,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.cors().and().csrf().disable()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-                .authorizeRequests().antMatchers("/api/auth/**").permitAll()
-                .antMatchers("/api/test/**").permitAll()
-                .antMatchers("/api/rest/**").permitAll()
-                .antMatchers("/**").permitAll()
+                .authorizeRequests()
+                .antMatchers("/api/auth/**").permitAll()
+//                .antMatchers("/api/test/**").permitAll()
+//                .antMatchers("/api/rest/**").permitAll()
+//                .antMatchers("/**").permitAll()
                 .anyRequest().authenticated();
 
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
