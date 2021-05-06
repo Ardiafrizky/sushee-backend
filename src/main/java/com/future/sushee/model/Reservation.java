@@ -40,11 +40,11 @@ public class Reservation {
     @Column(name = "status", nullable = false)
     private Integer status;
 
-    @OneToMany(mappedBy = "reservation",fetch=FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "reservation",fetch=FetchType.LAZY)
     @JsonIgnore
     private List<Order> orders;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     @JoinColumn(name = "user_id", referencedColumnName = "uuid")
     private User user;
 

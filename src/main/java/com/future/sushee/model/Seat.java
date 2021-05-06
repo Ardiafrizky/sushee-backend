@@ -28,11 +28,10 @@ public class Seat {
     private Integer capacity;
 
     @NotNull
-    @Size(max = 4)
     @Column(name = "available", nullable = false)
     private Boolean available;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "seat",fetch=FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "seat",fetch=FetchType.LAZY)
     private List<Reservation> reservations;
 }

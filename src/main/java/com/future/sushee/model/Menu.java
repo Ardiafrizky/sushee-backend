@@ -1,5 +1,6 @@
 package com.future.sushee.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -40,6 +41,7 @@ public class Menu {
     @Column(name = "image",nullable = true)
     private String imageUrl;
 
-    @OneToMany(mappedBy = "menu", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "menu", fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<Order> orders;
 }

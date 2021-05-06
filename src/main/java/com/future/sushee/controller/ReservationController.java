@@ -87,5 +87,4 @@ public class ReservationController {
         reservationService.deleteById(reservationService.getById(id));
         return ResponseEntity.ok(new MessageResponse("Reservation " + String.valueOf(id) + " successfully deleted"));
     }
-
 }

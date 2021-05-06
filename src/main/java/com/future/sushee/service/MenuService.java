@@ -8,5 +8,6 @@ import java.util.Optional;
 public interface MenuService {
     List<Menu> getAllMenu();
     Menu add(Menu menu);
+    Menu getById(Long id);
     Menu delete(Menu menu);
 }
