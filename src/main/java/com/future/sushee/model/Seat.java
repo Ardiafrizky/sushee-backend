@@ -16,9 +16,10 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name="seat")
-public class SeatModel {
+public class Seat {
 
     @Id @NotNull
+    @Column(name = "number", nullable = false)
     private Long number;
 
     @NotNull
@@ -33,5 +34,5 @@ public class SeatModel {
 
     @JsonIgnore
     @OneToMany(mappedBy = "seat",fetch=FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<ReservationModel> reservations;
+    private List<Reservation> reservations;
 }

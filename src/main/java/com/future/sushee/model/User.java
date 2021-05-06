@@ -19,7 +19,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name="user")
-public class UserModel {
+public class User {
     @Id
     @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(name = "system-uuid",strategy = "uuid")
@@ -36,7 +36,7 @@ public class UserModel {
     private String username;
 
     @NotNull
-    @Size(max = 50)
+    @Size(max = 100)
     @Column(name = "fullName",nullable = false)
     private String fullName;
 
@@ -56,13 +56,13 @@ public class UserModel {
     @JoinTable( name = "user_roles",
             joinColumns = @JoinColumn(name="user_id"),
             inverseJoinColumns = @JoinColumn(name="role_id"))
-    private Set<RoleModel> roles = new HashSet<>();
+    private Set<Role> roles = new HashSet<>();
 
     @OneToOne(mappedBy = "user")
     @JsonIgnore
-    private ReservationModel reservation;
+    private Reservation reservation;
 
-    public UserModel(
+    public User(
             String username, String fullname, String email,
             String password, String imageUrl
     ){

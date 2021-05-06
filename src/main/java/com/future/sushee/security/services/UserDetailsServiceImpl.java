@@ -1,7 +1,7 @@
 package com.future.sushee.security.services;
 
-import com.future.sushee.model.UserModel;
-import com.future.sushee.repository.UserDb;
+import com.future.sushee.model.User;
+import com.future.sushee.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -12,12 +12,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 	@Autowired
-	UserDb userDb;
+	UserRepository userRepository;
 
 	@Override
 	@Transactional
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		UserModel user = userDb
+		User user = userRepository
 				.findByUsername(username)
 				.orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + username));
 

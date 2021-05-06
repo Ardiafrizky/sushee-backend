@@ -8,7 +8,7 @@ import javax.persistence.*;
 @Entity
 @Setter @Getter
 @Table(name = "role")
-public class RoleModel {
+public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
