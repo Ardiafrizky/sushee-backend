@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -23,6 +24,16 @@ public class MenuController {
     private final MenuService menuService;
 
     @GetMapping("")
+    public List<Menu> getAllActiveMenu(){
+        List<Menu> output = new ArrayList<>();
+        List<Menu> menus = menuService.getAllMenu();
+        for(Menu menu : menus){
+            if(menu.getStatus()==1) output.add(menu);
+        }
+        return output;
+    }
+
+    @GetMapping("/all")
     public List<Menu> getAllMenu() {
         return menuService.getAllMenu();
     }

@@ -1,11 +1,13 @@
 package com.future.sushee.service;
 
 import com.future.sushee.model.Reservation;
+import com.future.sushee.model.Seat;
 import com.future.sushee.repository.ReservationRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -31,6 +33,30 @@ public class ReservationServiceImpl implements ReservationService {
     public Reservation deleteById(Reservation reservation) {
         reservationRepository.delete(reservation);
         return reservation;
+    }
+
+    @Override
+    public Boolean checkSeatValidity(Reservation reservation) {
+        Seat seat = reservation.getSeat();
+        Integer person = reservation.getNumberOfPerson();
+        return (seat.getCapacity() >= (person));
+    }
+
+    @Override
+    public Boolean checkAvailability(Reservation reservation) {
+        Long seat = reservation.getSeat().getNumber();
+        LocalDateTime newStart = reservation.getStartingDateTime();
+        LocalDateTime newEnd = newStart.plusMinutes(90);
+        for(Reservation r : getAllReservation()){
+            if(seat.equals(r.getSeat().getNumber())){
+                LocalDateTime rStart = r.getStartingDateTime();
+                LocalDateTime rEnd = rStart.plusMinutes(90);
+                if(newEnd.isAfter(rStart) && newStart.isBefore(rEnd)) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     @Override

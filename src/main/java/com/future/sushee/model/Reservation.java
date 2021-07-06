@@ -38,13 +38,18 @@ public class Reservation {
 
     @NotNull
     @Column(name = "status", nullable = false)
+    // -1 = rejected/deactivated, 0 = active(waiting until mealtime), 1 = active(on meal time), 2 = done(post meal time)
     private Integer status;
 
     @OneToMany(mappedBy = "reservation",fetch=FetchType.LAZY)
     @JsonIgnore
     private List<Order> orders;
 
-    @OneToOne
+//    @OneToOne
+//    @JoinColumn(name = "user_id", referencedColumnName = "uuid")
+//    private User user;
+
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "user_id", referencedColumnName = "uuid")
     private User user;
 

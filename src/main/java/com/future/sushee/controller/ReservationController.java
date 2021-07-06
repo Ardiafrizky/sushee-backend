@@ -51,32 +51,18 @@ public class ReservationController {
 
         reservation.setNumberOfPerson(reservationCreationRequest.getNumberOfPerson());
         reservation.setUser(userService.getUserByUsername(reservationCreationRequest.getUsername()));
+        reservation.setStartingDateTime(reservationCreationRequest.getStartingDateTime());
         reservation.setStatus(reservationCreationRequest.getStatus());
         reservation.setTotalPrice(reservationService.calculatePrice(200000, reservationCreationRequest.getNumberOfPerson(), 0.1f));
+        reservation.setSeat(seat);
 
-        boolean seatConstraintViolation = false;
-        if (!seat.getAvailable() || reservationCreationRequest.getNumberOfPerson() > seat.getCapacity()) seatConstraintViolation = true;
+        if(!reservationService.checkSeatValidity(reservation)) {
+            throw new RuntimeException("Error: Seat-Reservation constraint violation (capacity/availability)");
+        }
 
-        if(!seatConstraintViolation) {
-            reservation.setSeat(seat);
-            seat.setAvailable(false);
-        } else { throw new RuntimeException("Error: Seat-Reservation constraint violation (capacity/availability)"); }
-
-        // TODO: IMPLEMENT DATE_CHECKER HERE!
-
-        boolean reserved = false;
-        for(Reservation rsvp : reservationService.getAllReservation()) {
-            if (rsvp.getStartingDateTime().equals(reservationCreationRequest.getStartingDateTime())) {
-
-                // TODO: CHECK WITHIN 90min INTERVAL!
-
-                reserved = true;
-                break;
-            }
-        };
-        if(!reserved) {
-            reservation.setStartingDateTime(reservationCreationRequest.getStartingDateTime());
-        } else { throw new RuntimeException("Error: Booking datetime collision"); }
+        if (!reservationService.checkAvailability(reservation)) {
+            throw new RuntimeException("Error: Booking datetime collision");
+        }
 
         reservationService.add(reservation);
         return ResponseEntity.ok().body(new MessageResponse("Reservation successfully created."));

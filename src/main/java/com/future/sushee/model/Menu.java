@@ -41,6 +41,11 @@ public class Menu {
     @Column(name = "image",nullable = true)
     private String imageUrl;
 
+    @NotNull
+    @Column(name = "status", nullable = false)
+    // 0 = deactivated, 1 = activated
+    private Integer status;
+
     @OneToMany(mappedBy = "menu", fetch = FetchType.LAZY)
     @JsonIgnore
     private List<Order> orders;

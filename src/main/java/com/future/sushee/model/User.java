@@ -12,6 +12,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -58,9 +59,13 @@ public class User {
             inverseJoinColumns = @JoinColumn(name="role_id"))
     private Set<Role> roles = new HashSet<>();
 
-    @OneToOne(mappedBy = "user")
+//    @OneToOne(mappedBy = "user")
+//    @JsonIgnore
+//    private Reservation reservation;
+
+    @OneToMany(mappedBy = "user",fetch=FetchType.LAZY)
     @JsonIgnore
-    private Reservation reservation;
+    private Set<Reservation> reservations;
 
     public User(
             String username, String fullname, String email,
