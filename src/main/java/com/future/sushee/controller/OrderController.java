@@ -4,6 +4,7 @@ import com.future.sushee.model.Order;
 import com.future.sushee.model.Reservation;
 import com.future.sushee.payload.request.OrderCreationRequest;
 import com.future.sushee.payload.response.MessageResponse;
+import com.future.sushee.repository.OrderRepository;
 import com.future.sushee.service.MenuService;
 import com.future.sushee.service.OrderService;
 import com.future.sushee.service.ReservationService;
@@ -26,6 +27,7 @@ public class OrderController {
     private final OrderService orderService;
     private final ReservationService reservationService;
     private final MenuService menuService;
+    private final OrderRepository orderRepository;
 
     @GetMapping("")
     public List<Order> getAllOrder() {
@@ -52,16 +54,45 @@ public class OrderController {
 
     @PostMapping("/add")
     public ResponseEntity<?> addOrder(@Valid @RequestBody OrderCreationRequest orderCreationRequest) {
-
         Order order = new Order();
+        Reservation reservation = reservationService.getById(orderCreationRequest.getReservationId());
+        if (reservation.getStatus()!=1) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "Reservation not started yet"
+            );
+        }
 
         order.setAmount(orderCreationRequest.getAmount());
         order.setStatus(orderCreationRequest.getStatus());
-        order.setReservation(reservationService.getById(orderCreationRequest.getReservationId()));
+        order.setReservation(reservation);
         order.setMenu(menuService.getById(orderCreationRequest.getMenuId()));
 
         orderService.add(order);
         return ResponseEntity.ok().body(new MessageResponse("Order successfully added."));
+    }
+
+    @PostMapping("/{id}/done")
+    public ResponseEntity<?> setDone(@PathVariable Long id) {
+        Order order = orderService.getById(id);
+        order.setStatus(1);
+        orderRepository.save(order);
+        return ResponseEntity.ok().body(new MessageResponse("Order status: DONE"));
+    }
+
+    @PostMapping("/{id}/pending")
+    public ResponseEntity<?> setPending(@PathVariable Long id) {
+        Order order = orderService.getById(id);
+        order.setStatus(0);
+        orderRepository.save(order);
+        return ResponseEntity.ok().body(new MessageResponse("Order status: PENDING"));
+    }
+
+    @PostMapping("/{id}/cancel")
+    public ResponseEntity<?> setCancel(@PathVariable Long id) {
+        Order order = orderService.getById(id);
+        order.setStatus(-1);
+        orderRepository.save(order);
+        return ResponseEntity.ok().body(new MessageResponse("Order status: CANCELLED"));
     }
 
     @DeleteMapping("/{id}")

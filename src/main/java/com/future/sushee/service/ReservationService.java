@@ -10,6 +10,7 @@ public interface ReservationService {
     Reservation add(Reservation reservation);
     Reservation getById(Long id);
     Reservation deleteById(Reservation reservation);
+    String activate(Reservation reservation);
     Boolean checkSeatValidity(Reservation reservation);
     Boolean checkAvailability(Reservation reservation);
     Integer calculatePrice(Integer price, Integer numberOfPerson, Float tax);

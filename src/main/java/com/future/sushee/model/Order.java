@@ -21,6 +21,7 @@ public class Order {
 
     @NotNull
     @Column(name="status", nullable = false)
+    // -1 = cancelled, 0 = pending, 1 = fulfilled
     private Integer status;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)

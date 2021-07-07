@@ -38,7 +38,9 @@ public class Reservation {
 
     @NotNull
     @Column(name = "status", nullable = false)
-    // -1 = rejected/deactivated, 0 = active(waiting until mealtime), 1 = active(on meal time), 2 = done(post meal time)
+    // -1 = rejected/deactivated, 0 = active(waiting until mealtime),
+    // 1 = active(on meal time), 2 = done(post meal time)
+    // 3 = expired(post meal time)
     private Integer status;
 
     @OneToMany(mappedBy = "reservation",fetch=FetchType.LAZY)

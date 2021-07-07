@@ -36,6 +36,28 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
+    public String activate(Reservation reservation) {
+        LocalDateTime start = reservation.getStartingDateTime();
+        LocalDateTime end = start.plusMinutes(90);
+        LocalDateTime now = LocalDateTime.now();
+
+        if (reservation.getStatus()==-1) return "The reservation are already cancelled";
+        if (now.isBefore(start)) return "The reservation is not started yet";
+        if (now.isAfter(end)) {
+            if (reservation.getStatus()==0) {
+                reservation.setStatus(3);
+                reservationRepository.save(reservation);
+            }
+            return "The reservation is expired";
+        }
+        else {
+            reservation.setStatus(1);
+            reservationRepository.save(reservation);
+            return "The reservation has been activated successfully";
+        }
+    }
+
+    @Override
     public Boolean checkSeatValidity(Reservation reservation) {
         Seat seat = reservation.getSeat();
         Integer person = reservation.getNumberOfPerson();
