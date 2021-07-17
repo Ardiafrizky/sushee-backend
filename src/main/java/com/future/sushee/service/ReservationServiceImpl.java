@@ -2,6 +2,7 @@ package com.future.sushee.service;
 
 import com.future.sushee.model.Reservation;
 import com.future.sushee.model.Seat;
+import com.future.sushee.payload.response.ReservationResponse;
 import com.future.sushee.repository.ReservationRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,19 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     public List<Reservation> getAllReservation() { return reservationRepository.findAll(); }
+
+    @Override
+    public ReservationResponse createReservationResponse(Reservation reservation) {
+        ReservationResponse response = new ReservationResponse();
+        response.setId(reservation.getId());
+        response.setNumberOfPerson(reservation.getNumberOfPerson());
+        response.setTotalPrice(reservation.getTotalPrice());
+        response.setStartingDateTime(reservation.getStartingDateTime());
+        response.setStatus(reservation.getStatus());
+        response.setSeat(reservation.getSeat().getNumber());
+        response.setUser(reservation.getUser().getUuid());
+        return response;
+    }
 
     @Override
     public Reservation add(Reservation reservation) {

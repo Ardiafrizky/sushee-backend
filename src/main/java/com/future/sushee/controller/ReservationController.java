@@ -4,6 +4,7 @@ import com.future.sushee.model.Reservation;
 import com.future.sushee.model.Seat;
 import com.future.sushee.payload.request.ReservationCreationRequest;
 import com.future.sushee.payload.response.MessageResponse;
+import com.future.sushee.payload.response.ReservationResponse;
 import com.future.sushee.service.EmailService;
 import com.future.sushee.service.ReservationService;
 import com.future.sushee.service.SeatService;
@@ -16,6 +17,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -31,14 +33,22 @@ public class ReservationController {
     private final EmailService emailService;
 
     @GetMapping("")
-    public List<Reservation> getAllReservation() {
-        return reservationService.getAllReservation();
+    public List<ReservationResponse> getAllReservation() {
+        List<Reservation> reservations = reservationService.getAllReservation();
+        List<ReservationResponse> response = new ArrayList<>();
+        for (Reservation reservation: reservations) {
+            response.add(reservationService.createReservationResponse(reservation));
+        }
+        return response;
     }
 
     @GetMapping("/{id}")
-    public Reservation getReservationById(@PathVariable Long id) {
+    public ReservationResponse getReservationById(@PathVariable Long id) {
+        ReservationResponse response = new ReservationResponse();
         try {
-            return reservationService.getById(id);
+            Reservation reservation = reservationService.getById(id);
+            return reservationService.createReservationResponse(reservation);
+
         } catch (NoSuchElementException e) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, "No such reservation with ID " + String.valueOf(id)

@@ -47,15 +47,13 @@ public class Reservation {
     @JsonIgnore
     private List<Order> orders;
 
-//    @OneToOne
-//    @JoinColumn(name = "user_id", referencedColumnName = "uuid")
-//    private User user;
-
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "user_id", referencedColumnName = "uuid")
+    @JsonIgnore
     private User user;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "seat_number", referencedColumnName = "number", nullable = false)
+    @JsonIgnore
     private Seat seat;
 }

@@ -58,6 +58,7 @@ public class MenuController {
         menu.setDescription(menuCreationRequest.getDescription());
         menu.setUnit(menuCreationRequest.getUnit());
         menu.setImageUrl(menuCreationRequest.getImageUrl());
+        menu.setStatus(menuCreationRequest.getStatus());
 
         menuService.add(menu);
         return ResponseEntity.ok().body(new MessageResponse("Menu successfully added."));

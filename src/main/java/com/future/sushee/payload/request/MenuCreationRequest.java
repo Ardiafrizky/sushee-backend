@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnNotWebApplication;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Data
 @AllArgsConstructor
@@ -23,5 +24,8 @@ public class MenuCreationRequest {
 
     @NotBlank
     private String imageUrl;
+
+    @NotNull
+    private Integer status;
 
 }

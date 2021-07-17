@@ -2,6 +2,7 @@ package com.future.sushee.service;
 
 import com.future.sushee.model.Order;
 import com.future.sushee.model.Reservation;
+import com.future.sushee.payload.response.OrderResponse;
 import com.future.sushee.repository.OrderRepository;
 import com.future.sushee.repository.ReservationRepository;
 import lombok.AllArgsConstructor;
@@ -29,6 +30,18 @@ public class OrderServiceImpl implements OrderService {
             if(order.getReservation().getId().equals(id)) { result.add(order); }
         }
         return result;
+    }
+
+    @Override
+    public OrderResponse createOrderResponse(Order order){
+        OrderResponse response = new OrderResponse();
+        response.setId(order.getId());
+        response.setAmount(order.getAmount());
+        response.setStatus(order.getStatus());
+        response.setMenu(order.getMenu().getId());
+        response.setReservation(order.getReservation().getId());
+
+        return response;
     }
 
     @Override

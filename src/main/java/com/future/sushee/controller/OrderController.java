@@ -4,6 +4,7 @@ import com.future.sushee.model.Order;
 import com.future.sushee.model.Reservation;
 import com.future.sushee.payload.request.OrderCreationRequest;
 import com.future.sushee.payload.response.MessageResponse;
+import com.future.sushee.payload.response.OrderResponse;
 import com.future.sushee.repository.OrderRepository;
 import com.future.sushee.service.MenuService;
 import com.future.sushee.service.OrderService;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -30,16 +32,21 @@ public class OrderController {
     private final OrderRepository orderRepository;
 
     @GetMapping("")
-    public List<Order> getAllOrder() {
-        return orderService.getAllOrder();
+    public List<OrderResponse> getAllOrder() {
+        List<Order> orders =  orderService.getAllOrder();
+        List<OrderResponse> response = new ArrayList<>();
+        for(Order order: orders) {
+            response.add(orderService.createOrderResponse(order));
+        }
+        return response;
     }
 
-    // TODO: Optimize order GET-JSON
-
     @GetMapping("/{id}")
-    public Order getOrderById(@PathVariable Long id) {
+    public OrderResponse getOrderById(@PathVariable Long id) {
         try {
-            return orderService.getById(id);
+            Order order =  orderService.getById(id);
+            return orderService.createOrderResponse(order);
+
         } catch (NoSuchElementException e) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, "No such order with ID " + String.valueOf(id)
@@ -48,8 +55,21 @@ public class OrderController {
     }
 
     @GetMapping("/reservation/{id}")
-    public List<Order> getOrdersByReservationId(@PathVariable Long id) {
-        return orderService.getOrdersByReservationId(id);
+    public List<OrderResponse> getOrdersByReservationId(@PathVariable Long id) {
+        try {
+            List<Order> orders = orderService.getOrdersByReservationId(id);
+            List<OrderResponse> response = new ArrayList<>();
+            for (Order order : orders) {
+                response.add(orderService.createOrderResponse(order));
+            }
+            return response;
+        }
+
+        catch (NoSuchElementException e) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "No such order with ID " + String.valueOf(id)
+            );
+        }
     }
 
     @PostMapping("/add")
