@@ -8,6 +8,7 @@ import java.util.Optional;
 
 public interface ReservationService {
     List<Reservation> getAllReservation();
+    List<Reservation> getReservationByUsername(String username);
     ReservationResponse createReservationResponse(Reservation reservation);
     Reservation add(Reservation reservation);
     Reservation getById(Long id);

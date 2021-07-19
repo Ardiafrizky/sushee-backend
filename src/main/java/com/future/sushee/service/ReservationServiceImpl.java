@@ -17,9 +17,15 @@ import java.util.List;
 public class ReservationServiceImpl implements ReservationService {
 
     private final ReservationRepository reservationRepository;
+    private final UserService userService;
 
     @Override
     public List<Reservation> getAllReservation() { return reservationRepository.findAll(); }
+
+    @Override
+    public List<Reservation> getReservationByUsername(String username) {
+        return reservationRepository.findByUser(userService.getUserByUsername(username));
+    }
 
     @Override
     public ReservationResponse createReservationResponse(Reservation reservation) {

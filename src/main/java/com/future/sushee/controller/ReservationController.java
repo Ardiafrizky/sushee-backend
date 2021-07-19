@@ -42,7 +42,17 @@ public class ReservationController {
         return response;
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/user/{username}")
+    public List<ReservationResponse> getReservationByUser(@PathVariable String username) {
+        List<Reservation> reservations = reservationService.getReservationByUsername(username);
+        List<ReservationResponse> response = new ArrayList<>();
+        for (Reservation reservation: reservations) {
+            response.add(reservationService.createReservationResponse(reservation));
+        }
+        return response;
+    }
+
+    @GetMapping("/id/{id}")
     public ReservationResponse getReservationById(@PathVariable Long id) {
         ReservationResponse response = new ReservationResponse();
         try {
