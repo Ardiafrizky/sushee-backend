@@ -1,10 +1,17 @@
 package com.future.sushee.service;
 
+import com.future.sushee.model.EnumRole;
 import com.future.sushee.model.Role;
 import com.future.sushee.model.User;
+import com.future.sushee.payload.request.SignupRequest;
+import com.future.sushee.payload.response.MessageResponse;
 import com.future.sushee.payload.response.UserResponse;
 import com.future.sushee.repository.UserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,10 +25,35 @@ import java.util.Set;
 public class UserServiceImpl implements UserService{
 
     private final UserRepository userRepository;
+    private final AuthenticationManager authenticationManager;
 
     @Override
     public List<User> getAllUser() { return userRepository.findAll(); }
 
+    @Override
+    public String updateUser(SignupRequest userDatas) {
+
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(userDatas.getUsername(), userDatas.getPassword()));
+
+        if (!userRepository.existsByUsername(userDatas.getUsername())) {
+            return "User with username '" + userDatas.getUsername() +"' doesn't exists.";
+        }
+        User user = getUserByUsername(userDatas.getUsername());
+
+        if (userRepository.existsByEmail(userDatas.getEmail())) {
+            if (!user.getEmail().equals(userDatas.getEmail()))
+                return "Email '" + userDatas.getEmail() + "' already taken.";
+        }
+
+        user.setFullName(userDatas.getFullname());
+        user.setEmail(userDatas.getEmail());
+        user.setImageUrl(userDatas.getImageUrl());
+
+        userRepository.save(user);
+        return "Successfully updated";
+    }
+    
     @Override
     public UserResponse createUserResponse(User user) {
         UserResponse response = new UserResponse();
