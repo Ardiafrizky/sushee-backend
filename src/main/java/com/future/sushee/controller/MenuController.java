@@ -2,7 +2,7 @@ package com.future.sushee.controller;
 
 import com.future.sushee.payload.request.MenuCreationRequest;
 import com.future.sushee.payload.response.MessageResponse;
-import com.future.sushee.service.MenuService;
+import com.future.sushee.service.interfaces.MenuService;
 import com.future.sushee.model.Menu;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -51,17 +51,8 @@ public class MenuController {
 
     @PostMapping("/add")
     public ResponseEntity<?> addMenu(@Valid @RequestBody MenuCreationRequest menuCreationRequest) {
-
-        Menu menu = new Menu();
-
-        menu.setName(menuCreationRequest.getName());
-        menu.setDescription(menuCreationRequest.getDescription());
-        menu.setUnit(menuCreationRequest.getUnit());
-        menu.setImageUrl(menuCreationRequest.getImageUrl());
-        menu.setStatus(menuCreationRequest.getStatus());
-
-        menuService.add(menu);
-        return ResponseEntity.ok().body(new MessageResponse("Menu successfully added."));
+        Menu menu = menuService.addMenuFromRequest(menuCreationRequest);
+        return ResponseEntity.ok().body(new MessageResponse("Menu successfully added (id: " + menu.getId() + ")."));
     }
 
     @DeleteMapping("/{id}")

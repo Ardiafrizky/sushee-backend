@@ -1,4 +1,4 @@
-package com.future.sushee.service;
+package com.future.sushee.service.interfaces;
 
 import com.future.sushee.model.Reservation;
 import com.future.sushee.payload.response.ReservationResponse;

@@ -6,9 +6,9 @@ import com.future.sushee.payload.request.OrderCreationRequest;
 import com.future.sushee.payload.response.MessageResponse;
 import com.future.sushee.payload.response.OrderResponse;
 import com.future.sushee.repository.OrderRepository;
-import com.future.sushee.service.MenuService;
-import com.future.sushee.service.OrderService;
-import com.future.sushee.service.ReservationService;
+import com.future.sushee.service.interfaces.MenuService;
+import com.future.sushee.service.interfaces.OrderService;
+import com.future.sushee.service.interfaces.ReservationService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -64,7 +64,6 @@ public class OrderController {
             }
             return response;
         }
-
         catch (NoSuchElementException e) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, "No such order with ID " + String.valueOf(id)
@@ -74,45 +73,26 @@ public class OrderController {
 
     @PostMapping("/add")
     public ResponseEntity<?> addOrder(@Valid @RequestBody OrderCreationRequest orderCreationRequest) {
-        Order order = new Order();
-        Reservation reservation = reservationService.getById(orderCreationRequest.getReservationId());
-        if (reservation.getStatus()!=1) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, "Reservation not started yet"
-            );
-        }
-
-        order.setAmount(orderCreationRequest.getAmount());
-        order.setStatus(orderCreationRequest.getStatus());
-        order.setReservation(reservation);
-        order.setMenu(menuService.getById(orderCreationRequest.getMenuId()));
-
-        orderService.add(order);
-        return ResponseEntity.ok().body(new MessageResponse("Order successfully added."));
+        Order order = orderService.addOrderFromRequest(orderCreationRequest);
+        return ResponseEntity.ok().body(new MessageResponse("Order successfully added (id:" + order.getId() + ")."));
     }
 
     @PostMapping("/{id}/done")
     public ResponseEntity<?> setDone(@PathVariable Long id) {
-        Order order = orderService.getById(id);
-        order.setStatus(1);
-        orderRepository.save(order);
-        return ResponseEntity.ok().body(new MessageResponse("Order status: DONE"));
+        Order order = orderService.updateStatus(id,1);
+        return ResponseEntity.ok().body(new MessageResponse("Order " + order.getId() + " status: DONE"));
     }
 
     @PostMapping("/{id}/pending")
     public ResponseEntity<?> setPending(@PathVariable Long id) {
-        Order order = orderService.getById(id);
-        order.setStatus(0);
-        orderRepository.save(order);
-        return ResponseEntity.ok().body(new MessageResponse("Order status: PENDING"));
+        Order order = orderService.updateStatus(id,0);
+        return ResponseEntity.ok().body(new MessageResponse("Order " + order.getId() + " status: PENDING"));
     }
 
     @PostMapping("/{id}/cancel")
     public ResponseEntity<?> setCancel(@PathVariable Long id) {
-        Order order = orderService.getById(id);
-        order.setStatus(-1);
-        orderRepository.save(order);
-        return ResponseEntity.ok().body(new MessageResponse("Order status: CANCELLED"));
+        Order order = orderService.updateStatus(id,-1);
+        return ResponseEntity.ok().body(new MessageResponse("Order " + order.getId() + " status: CANCELLED"));
     }
 
     @DeleteMapping("/{id}")

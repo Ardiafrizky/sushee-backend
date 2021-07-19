@@ -1,7 +1,8 @@
-package com.future.sushee.service;
+package com.future.sushee.service.implementations;
 
 import com.future.sushee.model.Seat;
 import com.future.sushee.repository.SeatRepository;
+import com.future.sushee.service.interfaces.SeatService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

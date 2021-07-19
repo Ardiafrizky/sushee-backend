@@ -1,9 +1,11 @@
-package com.future.sushee.service;
+package com.future.sushee.service.implementations;
 
 import com.future.sushee.model.Reservation;
 import com.future.sushee.model.Seat;
 import com.future.sushee.payload.response.ReservationResponse;
 import com.future.sushee.repository.ReservationRepository;
+import com.future.sushee.service.interfaces.ReservationService;
+import com.future.sushee.service.interfaces.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

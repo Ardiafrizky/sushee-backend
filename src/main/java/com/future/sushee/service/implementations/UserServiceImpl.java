@@ -1,14 +1,12 @@
-package com.future.sushee.service;
+package com.future.sushee.service.implementations;
 
-import com.future.sushee.model.EnumRole;
 import com.future.sushee.model.Role;
 import com.future.sushee.model.User;
 import com.future.sushee.payload.request.SignupRequest;
-import com.future.sushee.payload.response.MessageResponse;
 import com.future.sushee.payload.response.UserResponse;
 import com.future.sushee.repository.UserRepository;
+import com.future.sushee.service.interfaces.UserService;
 import lombok.AllArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -22,7 +20,7 @@ import java.util.Set;
 @Service
 @Transactional
 @AllArgsConstructor
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final AuthenticationManager authenticationManager;

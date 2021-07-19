@@ -1,10 +1,9 @@
 package com.future.sushee.controller;
 
 import com.future.sushee.model.Seat;
-import com.future.sushee.model.Seat;
 import com.future.sushee.payload.request.SeatCreationRequest;
 import com.future.sushee.payload.response.MessageResponse;
-import com.future.sushee.service.SeatService;
+import com.future.sushee.service.interfaces.SeatService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,16 +1,12 @@
-package com.future.sushee.service;
+package com.future.sushee.service.implementations;
 
-import com.future.sushee.model.Menu;
-import com.future.sushee.repository.MenuRepository;
+import com.future.sushee.service.interfaces.EmailService;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @Component
