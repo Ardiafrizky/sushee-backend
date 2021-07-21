@@ -40,15 +40,8 @@ public class SeatController {
 
     @PostMapping("/add")
     public ResponseEntity<?> addSeat(@Valid @RequestBody SeatCreationRequest seatCreationRequest) {
-
-        Seat seat = new Seat();
-
-        seat.setNumber(seatCreationRequest.getNumber());
-        seat.setAvailable(seatCreationRequest.getAvailable());
-        seat.setCapacity(seatCreationRequest.getCapacity());
-
-        seatService.add(seat);
-        return ResponseEntity.ok().body(new MessageResponse("Seat successfully added."));
+        Seat seat = seatService.addFromRequest(seatCreationRequest);
+        return ResponseEntity.ok().body(new MessageResponse("Seat "+ seat.getNumber() +" successfully added."));
     }
 
     @DeleteMapping("/{number}")

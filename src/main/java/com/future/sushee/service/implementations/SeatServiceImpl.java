@@ -1,6 +1,7 @@
 package com.future.sushee.service.implementations;
 
 import com.future.sushee.model.Seat;
+import com.future.sushee.payload.request.SeatCreationRequest;
 import com.future.sushee.repository.SeatRepository;
 import com.future.sushee.service.interfaces.SeatService;
 import lombok.AllArgsConstructor;
@@ -23,6 +24,16 @@ public class SeatServiceImpl implements SeatService {
     public Seat add(Seat seat) {
         seatRepository.save(seat);
         return seat;
+    }
+
+    @Override
+    public Seat addFromRequest(SeatCreationRequest seatCreationRequest) {
+        Seat seat = new Seat();
+        seat.setNumber(seatCreationRequest.getNumber());
+        seat.setAvailable(seatCreationRequest.getAvailable());
+        seat.setCapacity(seatCreationRequest.getCapacity());
+
+        return add(seat);
     }
 
     @Override

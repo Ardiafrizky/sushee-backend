@@ -2,9 +2,11 @@ package com.future.sushee.service.implementations;
 
 import com.future.sushee.model.Reservation;
 import com.future.sushee.model.Seat;
+import com.future.sushee.payload.request.ReservationCreationRequest;
 import com.future.sushee.payload.response.ReservationResponse;
 import com.future.sushee.repository.ReservationRepository;
 import com.future.sushee.service.interfaces.ReservationService;
+import com.future.sushee.service.interfaces.SeatService;
 import com.future.sushee.service.interfaces.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,7 @@ public class ReservationServiceImpl implements ReservationService {
 
     private final ReservationRepository reservationRepository;
     private final UserService userService;
+    private final SeatService seatService;
 
     @Override
     public List<Reservation> getAllReservation() { return reservationRepository.findAll(); }
@@ -40,6 +43,28 @@ public class ReservationServiceImpl implements ReservationService {
         response.setSeat(reservation.getSeat().getNumber());
         response.setUser(reservation.getUser().getUuid());
         return response;
+    }
+
+    @Override
+    public Reservation addFromRequest(ReservationCreationRequest reservationCreationRequest) {
+        Reservation reservation = new Reservation();
+        Seat seat = seatService.getByNumber(reservationCreationRequest.getSeatNumber());
+
+        reservation.setNumberOfPerson(reservationCreationRequest.getNumberOfPerson());
+        reservation.setUser(userService.getUserByUsername(reservationCreationRequest.getUsername()));
+        reservation.setStartingDateTime(reservationCreationRequest.getStartingDateTime());
+        reservation.setStatus(reservationCreationRequest.getStatus());
+        reservation.setTotalPrice(calculatePrice(200000, reservationCreationRequest.getNumberOfPerson(), 0.1f));
+        reservation.setSeat(seat);
+
+        if(!checkSeatValidity(reservation)) {
+            throw new RuntimeException("Error: Seat-Reservation constraint violation (capacity/availability)");
+        }
+
+        if (!checkAvailability(reservation)) {
+            throw new RuntimeException("Error: Booking datetime collision");
+        }
+        return add(reservation);
     }
 
     @Override

@@ -26,9 +26,7 @@ import java.util.NoSuchElementException;
 @CrossOrigin(origins = "*", maxAge = 3600)
 public class ReservationController {
 
-    private final UserService userService;
     private final ReservationService reservationService;
-    private final SeatService seatService;
     private final EmailService emailService;
 
     @GetMapping("")
@@ -81,26 +79,7 @@ public class ReservationController {
 
     @PostMapping("/add")
     public ResponseEntity<?> addReservation(@Valid @RequestBody ReservationCreationRequest reservationCreationRequest) {
-
-        Reservation reservation = new Reservation();
-        Seat seat = seatService.getByNumber(reservationCreationRequest.getSeatNumber());
-
-        reservation.setNumberOfPerson(reservationCreationRequest.getNumberOfPerson());
-        reservation.setUser(userService.getUserByUsername(reservationCreationRequest.getUsername()));
-        reservation.setStartingDateTime(reservationCreationRequest.getStartingDateTime());
-        reservation.setStatus(reservationCreationRequest.getStatus());
-        reservation.setTotalPrice(reservationService.calculatePrice(200000, reservationCreationRequest.getNumberOfPerson(), 0.1f));
-        reservation.setSeat(seat);
-
-        if(!reservationService.checkSeatValidity(reservation)) {
-            throw new RuntimeException("Error: Seat-Reservation constraint violation (capacity/availability)");
-        }
-
-        if (!reservationService.checkAvailability(reservation)) {
-            throw new RuntimeException("Error: Booking datetime collision");
-        }
-
-        reservationService.add(reservation);
+        Reservation reservation = reservationService.addFromRequest(reservationCreationRequest);
         emailService.sendEmail(reservation.getUser().getEmail(), reservation.getId(), reservation.getUser().getUsername());
         return ResponseEntity.ok().body(new MessageResponse("Reservation successfully created."));
     }

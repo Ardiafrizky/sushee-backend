@@ -1,6 +1,7 @@
 package com.future.sushee.service.interfaces;
 
 import com.future.sushee.model.Reservation;
+import com.future.sushee.payload.request.ReservationCreationRequest;
 import com.future.sushee.payload.response.ReservationResponse;
 
 import java.util.List;
@@ -10,6 +11,7 @@ public interface ReservationService {
     List<Reservation> getAllReservation();
     List<Reservation> getReservationByUsername(String username);
     ReservationResponse createReservationResponse(Reservation reservation);
+    Reservation addFromRequest(ReservationCreationRequest reservationCreationRequest);
     Reservation add(Reservation reservation);
     Reservation getById(Long id);
     Reservation deleteById(Reservation reservation);

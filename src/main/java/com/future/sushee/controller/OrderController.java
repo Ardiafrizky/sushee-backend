@@ -27,9 +27,6 @@ import java.util.NoSuchElementException;
 public class OrderController {
     
     private final OrderService orderService;
-    private final ReservationService reservationService;
-    private final MenuService menuService;
-    private final OrderRepository orderRepository;
 
     @GetMapping("")
     public List<OrderResponse> getAllOrder() {
