@@ -13,7 +13,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @Transactional
@@ -116,6 +119,7 @@ public class ReservationServiceImpl implements ReservationService {
         Long seat = reservation.getSeat().getNumber();
         LocalDateTime newStart = reservation.getStartingDateTime();
         LocalDateTime newEnd = newStart.plusMinutes(90);
+
         for(Reservation r : getAllReservation()){
             if(seat.equals(r.getSeat().getNumber())){
                 LocalDateTime rStart = r.getStartingDateTime();
@@ -131,5 +135,28 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     public Integer calculatePrice(Integer price, Integer numberOfPerson, Float tax) {
         return Math.round(((numberOfPerson * price) * (1-tax)));
+    }
+
+    @Override
+    public Set<Seat> getAvailableSeats(LocalDateTime startingDateTime) {
+        List<Reservation> reservations = getAllReservation();
+        LocalDateTime endingDateTime = startingDateTime.plusMinutes(90);
+        Set<Seat> availableSeats = new HashSet<>();
+
+        HashMap<Seat,Boolean> flags = new HashMap<>();
+        for (Seat seat : seatService.getAllSeat()) {
+            flags.put(seat, Boolean.TRUE);
+        }
+        for (Reservation reservation: reservations) {
+            LocalDateTime tmpStartingDateTime = reservation.getStartingDateTime();
+            LocalDateTime tmpEndingDateTime = tmpStartingDateTime.plusMinutes(90);
+            if (endingDateTime.isAfter(tmpStartingDateTime) && startingDateTime.isBefore(tmpEndingDateTime)) {
+                flags.replace(reservation.getSeat(), Boolean.FALSE);
+            }
+        }
+        for (Seat seat : seatService.getAllSeat()) {
+            if (flags.get(seat)) availableSeats.add(seat);
+        }
+        return availableSeats;
     }
 }

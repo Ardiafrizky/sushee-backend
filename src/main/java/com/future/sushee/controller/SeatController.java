@@ -3,6 +3,7 @@ package com.future.sushee.controller;
 import com.future.sushee.model.Seat;
 import com.future.sushee.payload.request.SeatCreationRequest;
 import com.future.sushee.payload.response.MessageResponse;
+import com.future.sushee.service.interfaces.ReservationService;
 import com.future.sushee.service.interfaces.SeatService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -11,8 +12,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 @AllArgsConstructor
 @RestController
@@ -21,6 +25,7 @@ import java.util.NoSuchElementException;
 public class SeatController {
     
     private final SeatService seatService;
+    private final ReservationService reservationService;
     
     @GetMapping("")
     public List<Seat> getAllSeat() {
@@ -36,6 +41,13 @@ public class SeatController {
                     HttpStatus.NOT_FOUND, "No such seat with ID " + String.valueOf(number)
             );
         }
+    }
+
+    @GetMapping("/available")
+    public Set<Seat> getAvailableSeats(@RequestParam("datetime") String datetimeString) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        LocalDateTime datetime = LocalDateTime.parse(datetimeString, formatter);
+        return reservationService.getAvailableSeats(datetime);
     }
 
     @PostMapping("/add")
