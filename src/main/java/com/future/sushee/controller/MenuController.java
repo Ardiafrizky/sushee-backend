@@ -52,7 +52,8 @@ public class MenuController {
     @PostMapping("/add")
     public ResponseEntity<?> addMenu(@Valid @RequestBody MenuCreationRequest menuCreationRequest) {
         Menu menu = menuService.addMenuFromRequest(menuCreationRequest);
-        return ResponseEntity.ok().body(new MessageResponse("Menu successfully added (id: " + menu.getId() + ")."));
+        return ResponseEntity.ok().body(new MessageResponse(
+                "Menu '"+ menu.getName() + "' successfully added (id: " + menu.getId() + ")."));
     }
 
     @DeleteMapping("/{id}")

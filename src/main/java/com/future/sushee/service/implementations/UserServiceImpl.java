@@ -72,7 +72,7 @@ public class UserServiceImpl implements UserService {
                     .badRequest()
                     .body(new MessageResponse("Error: Username is already taken!"));
         }
-
+        Boolean x = isExistsByEmail(signUpRequest.getEmail());
         if (isExistsByEmail(signUpRequest.getEmail())) {
             return ResponseEntity
                     .badRequest()
@@ -84,8 +84,7 @@ public class UserServiceImpl implements UserService {
                 signUpRequest.getUsername(),
                 signUpRequest.getFullname(),
                 signUpRequest.getEmail(),
-                encoder.encode(signUpRequest.getPassword()),
-                signUpRequest.getImageUrl());
+                encoder.encode(signUpRequest.getPassword()));
 
         Set<String> strRoles = signUpRequest.getRole();
         Set<Role> roles = new HashSet<>();
@@ -118,7 +117,7 @@ public class UserServiceImpl implements UserService {
 
         user.setRoles(roles);
         userRepository.save(user);
-        return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+        return ResponseEntity.ok(new MessageResponse("User '"+ user.getUsername() + "' successfully registered"));
     }
 
     @Override
@@ -139,10 +138,9 @@ public class UserServiceImpl implements UserService {
 
         user.setFullName(userDatas.getFullname());
         user.setEmail(userDatas.getEmail());
-        user.setImageUrl(userDatas.getImageUrl());
 
         userRepository.save(user);
-        return "Successfully updated";
+        return "User '"+ user.getUsername() + "' data successfully updated";
     }
     
     @Override
@@ -150,7 +148,6 @@ public class UserServiceImpl implements UserService {
         UserResponse response = new UserResponse();
         response.setEmail(user.getEmail());
         response.setFullname(user.getFullName());
-        response.setImageUrl(user.getImageUrl());
         response.setUsername(user.getUsername());
         response.setUuid(user.getUuid());
 

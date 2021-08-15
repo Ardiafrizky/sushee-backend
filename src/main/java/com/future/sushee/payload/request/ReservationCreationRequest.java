@@ -29,7 +29,4 @@ public class ReservationCreationRequest {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm", iso = DateTimeFormat.ISO.DATE_TIME)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime startingDateTime;
-
-    @NotBlank
-    private Integer status;
 }

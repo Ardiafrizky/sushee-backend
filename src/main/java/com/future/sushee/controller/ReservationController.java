@@ -81,7 +81,8 @@ public class ReservationController {
     public ResponseEntity<?> addReservation(@Valid @RequestBody ReservationCreationRequest reservationCreationRequest) {
         Reservation reservation = reservationService.addFromRequest(reservationCreationRequest);
         emailService.sendEmail(reservation.getUser().getEmail(), reservation.getId(), reservation.getUser().getUsername());
-        return ResponseEntity.ok().body(new MessageResponse("Reservation successfully created."));
+        return ResponseEntity.ok().body(new MessageResponse(
+                "Reservation for "+ reservationCreationRequest.getUsername() +" successfully created (id: "+reservation.getId()+")"));
     }
 
     @DeleteMapping("/{id}")

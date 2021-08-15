@@ -56,7 +56,7 @@ public class ReservationServiceImpl implements ReservationService {
         reservation.setNumberOfPerson(reservationCreationRequest.getNumberOfPerson());
         reservation.setUser(userService.getUserByUsername(reservationCreationRequest.getUsername()));
         reservation.setStartingDateTime(reservationCreationRequest.getStartingDateTime());
-        reservation.setStatus(reservationCreationRequest.getStatus());
+        reservation.setStatus(0);
         reservation.setTotalPrice(calculatePrice(200000, reservationCreationRequest.getNumberOfPerson(), 0.1f));
         reservation.setSeat(seat);
 
@@ -134,7 +134,7 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     public Integer calculatePrice(Integer price, Integer numberOfPerson, Float tax) {
-        return Math.round(((numberOfPerson * price) * (1-tax)));
+        return Math.round(((numberOfPerson * price) * (1+tax)));
     }
 
     @Override

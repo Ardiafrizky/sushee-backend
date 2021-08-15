@@ -50,7 +50,7 @@ public class SeatController {
         return reservationService.getAvailableSeats(datetime);
     }
 
-    @PostMapping("/add")
+    @PostMapping("/upsert")
     public ResponseEntity<?> addSeat(@Valid @RequestBody SeatCreationRequest seatCreationRequest) {
         Seat seat = seatService.addFromRequest(seatCreationRequest);
         return ResponseEntity.ok().body(new MessageResponse("Seat "+ seat.getNumber() +" successfully added."));

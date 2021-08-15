@@ -3,6 +3,7 @@ package com.future.sushee.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -17,6 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import com.future.sushee.security.jwt.AuthEntryPointJwt;
 import com.future.sushee.security.jwt.AuthTokenFilter;
 import com.future.sushee.security.services.UserDetailsServiceImpl;
+import org.springframework.stereotype.Component;
 
 @Configuration
 @EnableWebSecurity
@@ -52,6 +54,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable()
@@ -61,7 +64,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // TODO: Temporarily disabled for development
 //                .antMatchers("/api/auth/**").permitAll()
                 // This one below are commented
-//                .antMatchers("/**").permitAll()
+                .antMatchers("/**").permitAll()
 //                .anyRequest().authenticated();
                     .anyRequest().permitAll();
 

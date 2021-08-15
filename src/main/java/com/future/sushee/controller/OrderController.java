@@ -71,7 +71,7 @@ public class OrderController {
     @PostMapping("/add")
     public ResponseEntity<?> addOrder(@Valid @RequestBody OrderCreationRequest orderCreationRequest) {
         Order order = orderService.addOrderFromRequest(orderCreationRequest);
-        return ResponseEntity.ok().body(new MessageResponse("Order successfully added (id:" + order.getId() + ")."));
+        return ResponseEntity.ok().body(new MessageResponse("Order successfully added (id: " + order.getId() + ")."));
     }
 
     @PostMapping("/{id}/done")

@@ -21,10 +21,6 @@ public class SignupRequest {
     private String fullname;
 
     @NotBlank
-    @Size(max = 200)
-    private String imageUrl;
-
-    @NotBlank
     @Size(max = 50)
     @Email
     private String email;

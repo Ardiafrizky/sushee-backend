@@ -47,11 +47,6 @@ public class User {
     @JsonIgnore
     private String password;
 
-    @NotNull
-    @Size(max = 200)
-    @Column(name = "image",nullable = true)
-    private String imageUrl;
-
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable( name = "user_roles",
             joinColumns = @JoinColumn(name="user_id"),
@@ -63,12 +58,11 @@ public class User {
     private Set<Reservation> reservations;
 
     public User(
-            String username, String fullname, String email,
-            String password, String imageUrl
+            String username, String fullname,
+            String email, String password
     ){
         this.username = username;
         this.fullName = fullname;
-        this.imageUrl = imageUrl;
         this.password = password;
         this.email = email;
     }
