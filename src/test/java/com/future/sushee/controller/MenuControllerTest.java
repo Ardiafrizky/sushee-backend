@@ -10,6 +10,7 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -48,7 +49,6 @@ public class MenuControllerTest {
         this.menu1 = new Menu(1L, "menu1", "desc1", "pc", "url1", 1, null);
         this.menu2 = new Menu(2L, "menu2", "desc2", "pc", "url2", 0, null);
         this.menus = Arrays.asList(menu1, menu2);
-
         this.menuCreationRequest = new MenuCreationRequest("menu3", "desc3", "pc", "url3", 1);
     }
 

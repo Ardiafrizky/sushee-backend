@@ -80,7 +80,9 @@ public class ReservationController {
     @PostMapping("/add")
     public ResponseEntity<?> addReservation(@Valid @RequestBody ReservationCreationRequest reservationCreationRequest) {
         Reservation reservation = reservationService.addFromRequest(reservationCreationRequest);
-        emailService.sendEmail(reservation.getUser().getEmail(), reservation.getId(), reservation.getUser().getUsername());
+        new Thread(() ->
+                emailService.sendEmail(reservation.getUser().getEmail(), reservation.getId(), reservation.getUser().getUsername())).start();
+
         return ResponseEntity.ok().body(new MessageResponse(
                 "Reservation for "+ reservationCreationRequest.getUsername() +" successfully created (id: "+reservation.getId()+")"));
     }

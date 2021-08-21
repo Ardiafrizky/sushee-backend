@@ -10,6 +10,7 @@ import com.future.sushee.payload.response.UserResponse;
 import com.future.sushee.repository.RoleRepository;
 import com.future.sushee.repository.UserRepository;
 import com.future.sushee.security.jwt.JwtUtils;
+import com.future.sushee.security.services.UserDetailsImpl;
 import com.future.sushee.service.implementations.UserServiceImpl;
 import org.junit.jupiter.api.*;
 import org.mockito.*;
@@ -45,6 +46,12 @@ public class UserServiceTest {
 
     @Mock
     private JwtUtils jwtUtils;
+
+    @Mock
+    private Authentication authentication;
+
+    @Mock
+    private UserDetailsImpl userDetails;
 
 //    private Role roleStaff;
 //    private Role roleAdmin;
@@ -83,7 +90,12 @@ public class UserServiceTest {
     // TODO: authenticateUserTest
     @Test
     public void authenticateUserTest() {
+        when(authenticationManager.authenticate(ArgumentMatchers.any())).thenReturn(authentication);
+        when(jwtUtils.generateJwtToken(ArgumentMatchers.any())).thenReturn("jwt");
+        when(authentication.getPrincipal()).thenReturn(userDetails);
 
+        JwtResponse result = userService.authenticateUser("name", "password");
+        assertEquals(result.getClass(), JwtResponse.class);
     }
 
     @Test
@@ -116,14 +128,41 @@ public class UserServiceTest {
     }
 
     @Test
-    public void registerUserTest() {
+    public void registerUserStaffTest() {
         SignupRequest signupRequest = new SignupRequest("username", "email", "password", "fullname", roles);
         doReturn(Boolean.FALSE).when(userService).isExistsByUsername(ArgumentMatchers.anyString());
-        doReturn(Boolean.TRUE).when(userService).isExistsByEmail(ArgumentMatchers.anyString());
+        doReturn(Boolean.FALSE).when(userService).isExistsByEmail(ArgumentMatchers.anyString());
+        when(roleRepository.findByName(EnumRole.ROLE_STAFF)).thenReturn(Optional.of(new Role()));
 
         ResponseEntity<MessageResponse> result = userService.registerUser(signupRequest);
         verify(userService).isExistsByUsername(ArgumentMatchers.anyString());
-        assertEquals(Objects.requireNonNull(result.getBody()).getMessage(), "Error: Email is already in use!" );
+        assertEquals(Objects.requireNonNull(result.getBody()).getMessage(), "User 'username' successfully registered" );
+    }
+
+    @Test
+    public void registerUserAdminTest() {
+        this.roles = new HashSet<>(Collections.singletonList("ROLE_ADMIN"));
+        SignupRequest signupRequest = new SignupRequest("username", "email", "password", "fullname", roles);
+
+        doReturn(Boolean.FALSE).when(userService).isExistsByUsername(ArgumentMatchers.anyString());
+        doReturn(Boolean.FALSE).when(userService).isExistsByEmail(ArgumentMatchers.anyString());
+        when(roleRepository.findByName(EnumRole.ROLE_ADMIN)).thenReturn(Optional.of(new Role()));
+
+        ResponseEntity<MessageResponse> result = userService.registerUser(signupRequest);
+        verify(userService).isExistsByUsername(ArgumentMatchers.anyString());
+        assertEquals(Objects.requireNonNull(result.getBody()).getMessage(), "User 'username' successfully registered" );
+    }
+
+    @Test
+    public void registerUserWithoutRoleTest() {
+        SignupRequest signupRequest = new SignupRequest("username", "email", "password", "fullname", null);
+
+        doReturn(Boolean.FALSE).when(userService).isExistsByUsername(ArgumentMatchers.anyString());
+        doReturn(Boolean.FALSE).when(userService).isExistsByEmail(ArgumentMatchers.anyString());
+
+        assertThrows(RuntimeException.class, () -> {
+            userService.registerUser(signupRequest);
+        });
     }
 
     @Test

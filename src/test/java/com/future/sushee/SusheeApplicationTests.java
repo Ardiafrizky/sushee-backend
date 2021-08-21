@@ -8,6 +8,6 @@ class SusheeApplicationTests {
 
     @Test
     void contextLoads() {
+        SusheeApplication.main(new String[]{});
     }
-
 }

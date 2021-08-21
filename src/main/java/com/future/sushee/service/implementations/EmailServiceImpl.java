@@ -4,6 +4,7 @@ import com.future.sushee.service.interfaces.EmailService;
 import lombok.AllArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class EmailServiceImpl implements EmailService {
     private final JavaMailSender emailSender;
 
+    @Async
     @Override
     public void sendEmail(String to, Long id, String username) {
         SimpleMailMessage mail = new SimpleMailMessage();

@@ -39,7 +39,6 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder encoder;
     private final JwtUtils jwtUtils;
 
-
     @Override
     public List<User> getAllUser() { return userRepository.findAll(); }
 
@@ -96,12 +95,12 @@ public class UserServiceImpl implements UserService {
         } else {
             strRoles.forEach(role -> {
                 switch (role) {
-                    case "admin":
+                    case "ROLE_ADMIN":
                         Role adminRole = roleRepository.findByName(EnumRole.ROLE_ADMIN)
                                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
                         roles.add(adminRole);
                         break;
-                    case "mod":
+                    case "ROLE_STAFF":
                         Role modRole = roleRepository.findByName(EnumRole.ROLE_STAFF)
                                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
                         roles.add(modRole);

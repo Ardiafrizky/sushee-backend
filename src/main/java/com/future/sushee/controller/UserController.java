@@ -1,5 +1,6 @@
 package com.future.sushee.controller;
 
+import com.future.sushee.model.EnumRole;
 import com.future.sushee.model.User;
 import com.future.sushee.payload.request.SignupRequest;
 import com.future.sushee.payload.response.MessageResponse;
@@ -27,6 +28,39 @@ public class UserController {
         List<UserResponse> response = new ArrayList<>();
         for(User user: users) {
             response.add(userService.createUserResponse(user));
+        }
+        return response;
+    }
+
+    @GetMapping("/client")
+    public List<UserResponse> getUserClient() {
+        List<User> users = userService.getAllUser();
+        List<UserResponse> response = new ArrayList<>();
+        for(User user: users) {
+            if (user.getRoles().stream().anyMatch(o -> o.getName().equals(EnumRole.ROLE_CLIENT)))
+                response.add(userService.createUserResponse(user));
+        }
+        return response;
+    }
+
+    @GetMapping("/staff")
+    public List<UserResponse> getUserStaff() {
+        List<User> users = userService.getAllUser();
+        List<UserResponse> response = new ArrayList<>();
+        for(User user: users) {
+            if (user.getRoles().stream().anyMatch(o -> o.getName().equals(EnumRole.ROLE_STAFF)))
+                response.add(userService.createUserResponse(user));
+        }
+        return response;
+    }
+
+    @GetMapping("/admin")
+    public List<UserResponse> getUserAdmin() {
+        List<User> users = userService.getAllUser();
+        List<UserResponse> response = new ArrayList<>();
+        for(User user: users) {
+            if (user.getRoles().stream().anyMatch(o -> o.getName().equals(EnumRole.ROLE_ADMIN)))
+                response.add(userService.createUserResponse(user));
         }
         return response;
     }
