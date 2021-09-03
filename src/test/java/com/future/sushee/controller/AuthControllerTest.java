@@ -44,7 +44,7 @@ public class AuthControllerTest {
     public void authenticateUserTest() throws Exception {
         when(userService.authenticateUser(
                 ArgumentMatchers.anyString(), ArgumentMatchers.anyString()))
-                .thenReturn(new JwtResponse("a", "1", "u", "e", null));
+                .thenReturn(new JwtResponse("a", "1", "u", "f", "e", null));
 
         mockMvc.perform(post("/api/auth/signin")
                 .contentType(MediaType.APPLICATION_JSON)

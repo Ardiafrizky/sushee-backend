@@ -17,7 +17,7 @@ public class UserDetailsImplTest {
 
     @Test
     public void userDetailsImplConstructTest() throws Exception {
-        this.userDetails1 = new UserDetailsImpl("id", "username", "email", "password", null);
+        this.userDetails1 = new UserDetailsImpl("id", "username", "fullname", "email", "password", null);
         assertEquals(userDetails1.getUsername(), "username");
         assertEquals(userDetails1.getEmail(), "email");
         assertEquals(userDetails1.getPassword(), "password");

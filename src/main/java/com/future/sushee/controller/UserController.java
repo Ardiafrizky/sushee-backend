@@ -75,4 +75,10 @@ public class UserController {
         String message = userService.updateUser(signUpRequest);
         return ResponseEntity.ok().body(new MessageResponse(message));
     }
+
+    @DeleteMapping("/{username}")
+    public UserResponse deleteUser(@PathVariable String username) {
+        User user = userService.delete(userService.getUserByUsername(username));
+        return userService.createUserResponse(user);
+    }
 }

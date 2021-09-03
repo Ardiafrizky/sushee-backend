@@ -55,10 +55,13 @@ public class UserServiceImpl implements UserService {
                 .map(item -> item.getAuthority())
                 .collect(Collectors.toList());
 
+        User user = this.getUserByUsername(username);
+
         return new JwtResponse(
                 jwt,
                 userDetails.getId(),
                 userDetails.getUsername(),
+                user.getFullName(),
                 userDetails.getEmail(),
                 roles
         );

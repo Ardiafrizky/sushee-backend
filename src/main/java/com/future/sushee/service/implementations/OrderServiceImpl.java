@@ -45,7 +45,7 @@ public class OrderServiceImpl implements OrderService {
         response.setId(order.getId());
         response.setAmount(order.getAmount());
         response.setStatus(order.getStatus());
-        response.setMenu(order.getMenu().getId());
+        response.setMenu(order.getMenu());
         response.setReservation(order.getReservation().getId());
 
         return response;

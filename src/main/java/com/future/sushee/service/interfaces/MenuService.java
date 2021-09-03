@@ -9,7 +9,8 @@ import java.util.Optional;
 public interface MenuService {
     List<Menu> getAllMenu();
     Menu addMenu(Menu menu);
-    Menu addMenuFromRequest(MenuCreationRequest menuRequest);
+    Menu addMenuFromRequest(MenuCreationRequest menuRequest) throws Exception;
+    Menu updateMenuFromRequest(Long id, MenuCreationRequest menuCreationRequest) throws Exception;
     Menu getById(Long id);
     Menu delete(Menu menu);
 }

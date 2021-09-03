@@ -59,8 +59,8 @@ public class OrderControllerTest {
         this.orders = Arrays.asList(order1, order2);
 
         this.orderCreationRequest = new OrderCreationRequest(1, 0, 1L, 1L);
-        this.orderResponse1 = new OrderResponse(1L, 1, 0, 1L, 1L);
-        this.orderResponse2 = new OrderResponse(2L, 1, 0, 1L, 1L);
+        this.orderResponse1 = new OrderResponse(1L, 1, 0, new Menu(), 1L);
+        this.orderResponse2 = new OrderResponse(2L, 1, 0, new Menu(), 1L);
     }
 
     @Test

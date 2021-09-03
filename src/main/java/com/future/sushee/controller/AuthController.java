@@ -4,6 +4,7 @@ import com.future.sushee.payload.request.LoginRequest;
 import com.future.sushee.payload.request.SignupRequest;
 import com.future.sushee.service.interfaces.UserService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,6 +30,13 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
-        return userService.registerUser(signUpRequest);
+        ResponseEntity<?> response = userService.registerUser(signUpRequest);
+        if (!response.getStatusCode().equals(HttpStatus.OK)) { return response;}
+        return ResponseEntity.ok(
+                userService.authenticateUser(
+                        signUpRequest.getUsername(),
+                        signUpRequest.getPassword()
+                )
+        );
     }
 }

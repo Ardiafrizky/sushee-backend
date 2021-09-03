@@ -51,9 +51,27 @@ public class MenuController {
 
     @PostMapping("/add")
     public ResponseEntity<?> addMenu(@Valid @RequestBody MenuCreationRequest menuCreationRequest) {
-        Menu menu = menuService.addMenuFromRequest(menuCreationRequest);
+        Menu menu;
+        try {
+            menu = menuService.addMenuFromRequest(menuCreationRequest);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
+        }
         return ResponseEntity.ok().body(new MessageResponse(
                 "Menu '"+ menu.getName() + "' successfully added (id: " + menu.getId() + ")."));
+    }
+
+    @PostMapping("/upsert/{id}")
+    public ResponseEntity<?> upsertMenu(@Valid @RequestBody MenuCreationRequest menuCreationRequest,
+                                        @PathVariable Long id) {
+        Menu menu;
+        try {
+            menu = menuService.updateMenuFromRequest(id, menuCreationRequest);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
+        }
+        return ResponseEntity.ok().body(new MessageResponse(
+                "Menu '"+ menu.getName() + "' successfully updated (id: " + menu.getId() + ")."));
     }
 
     @DeleteMapping("/{id}")

@@ -15,6 +15,7 @@ public class UserDetailsImpl implements UserDetails {
 	private static final long serialVersionUID = 1L;
 	private String id;
 	private String username;
+	private String fullname;
 	private String email;
 
 	@JsonIgnore
@@ -22,10 +23,11 @@ public class UserDetailsImpl implements UserDetails {
 
 	private Collection<? extends GrantedAuthority> authorities;
 
-	public UserDetailsImpl(String id, String username, String email, String password,
+	public UserDetailsImpl(String id, String username, String fullname, String email, String password,
                            Collection<? extends GrantedAuthority> authorities) {
 		this.id = id;
 		this.username = username;
+		this.fullname = fullname;
 		this.email = email;
 		this.password = password;
 		this.authorities = authorities;
@@ -38,7 +40,8 @@ public class UserDetailsImpl implements UserDetails {
 
 		return new UserDetailsImpl(
 				user.getUuid(),
-				user.getUsername(), 
+				user.getUsername(),
+				user.getFullName(),
 				user.getEmail(),
 				user.getPassword(), 
 				authorities

@@ -44,7 +44,7 @@ public class ReservationServiceImpl implements ReservationService {
         response.setStartingDateTime(reservation.getStartingDateTime());
         response.setStatus(reservation.getStatus());
         response.setSeat(reservation.getSeat().getNumber());
-        response.setUser(reservation.getUser().getUuid());
+        response.setUser(reservation.getUser().getUsername());
         return response;
     }
 
@@ -97,13 +97,17 @@ public class ReservationServiceImpl implements ReservationService {
             if (reservation.getStatus()==0) {
                 reservation.setStatus(3);
                 reservationRepository.save(reservation);
+                return "The reservation is expired";
+            } else {
+                reservation.setStatus(2);
+                reservationRepository.save(reservation);
+                return "The reservation is finished";
             }
-            return "The reservation is expired";
         }
         else {
             reservation.setStatus(1);
             reservationRepository.save(reservation);
-            return "The reservation has been activated successfully";
+            return "The reservation has been activated";
         }
     }
 
