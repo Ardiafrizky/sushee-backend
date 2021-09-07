@@ -16,6 +16,7 @@ public interface ReservationService {
     ReservationResponse createReservationResponse(Reservation reservation);
     Reservation addFromRequest(ReservationCreationRequest reservationCreationRequest);
     Reservation add(Reservation reservation);
+    Reservation cancelReservation(Long id);
     Reservation getById(Long id);
     Reservation deleteById(Reservation reservation);
     String activate(Reservation reservation);

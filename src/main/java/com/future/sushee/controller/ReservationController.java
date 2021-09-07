@@ -4,12 +4,14 @@ import com.future.sushee.model.Reservation;
 import com.future.sushee.model.Seat;
 import com.future.sushee.payload.request.ReservationCreationRequest;
 import com.future.sushee.payload.response.MessageResponse;
+import com.future.sushee.payload.response.PriceResponse;
 import com.future.sushee.payload.response.ReservationResponse;
 import com.future.sushee.service.interfaces.EmailService;
 import com.future.sushee.service.interfaces.ReservationService;
 import com.future.sushee.service.interfaces.SeatService;
 import com.future.sushee.service.interfaces.UserService;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +30,14 @@ public class ReservationController {
 
     private final ReservationService reservationService;
     private final EmailService emailService;
+    private final int price = 200000;
+    private final float tax = 0.1f;
+
+//    @Value("${sushee.price}")
+//    public final int price;
+//
+//    @Value("${sushee.tax}")
+//    public final float tax;
 
     @GetMapping("")
     public List<ReservationResponse> getAllReservation() {
@@ -66,15 +76,25 @@ public class ReservationController {
     @GetMapping("/{id}/update-status")
     public ResponseEntity<?> activateReservation(@PathVariable Long id) {
         Reservation reservation;
+        String message;
         try {
             reservation = reservationService.getById(id);
+            message = reservationService.activate(reservation);
         } catch (NoSuchElementException e) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, "No such reservation with ID " + String.valueOf(id)
             );
+        } catch (RuntimeException re) {
+            throw new ResponseStatusException(
+                    HttpStatus.INTERNAL_SERVER_ERROR, re.getMessage()
+            );
         }
-        String message = reservationService.activate(reservation);
         return ResponseEntity.ok().body(new MessageResponse(message));
+    }
+
+    @GetMapping("/{id}/cancel")
+    public ReservationResponse cancelReservation(@PathVariable Long id) {
+        return reservationService.createReservationResponse(reservationService.cancelReservation(id));
     }
 
     @PostMapping("/add")
@@ -91,5 +111,13 @@ public class ReservationController {
     public ResponseEntity<?> deleteReservation(@PathVariable Long id) {
         reservationService.deleteById(reservationService.getById(id));
         return ResponseEntity.ok(new MessageResponse("Reservation " + String.valueOf(id) + " successfully deleted"));
+    }
+
+    @GetMapping("/price-detail")
+    public PriceResponse getPriceDetail() {
+        PriceResponse response = new PriceResponse();
+        response.setTax(tax);
+        response.setPrice(price);
+        return response;
     }
 }

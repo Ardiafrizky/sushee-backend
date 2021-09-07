@@ -9,6 +9,7 @@ import com.future.sushee.service.interfaces.ReservationService;
 import com.future.sushee.service.interfaces.SeatService;
 import com.future.sushee.service.interfaces.UserService;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +27,12 @@ public class ReservationServiceImpl implements ReservationService {
     private final ReservationRepository reservationRepository;
     private final UserService userService;
     private final SeatService seatService;
+
+    @Value("${sushee.price}")
+    private static Integer price;
+
+    @Value("${sushee.tax}")
+    private static Float tax;
 
     @Override
     public List<Reservation> getAllReservation() { return reservationRepository.findAll(); }
@@ -57,7 +64,7 @@ public class ReservationServiceImpl implements ReservationService {
         reservation.setUser(userService.getUserByUsername(reservationCreationRequest.getUsername()));
         reservation.setStartingDateTime(reservationCreationRequest.getStartingDateTime());
         reservation.setStatus(0);
-        reservation.setTotalPrice(calculatePrice(200000, reservationCreationRequest.getNumberOfPerson(), 0.1f));
+        reservation.setTotalPrice(calculatePrice(price, reservationCreationRequest.getNumberOfPerson(), tax));
         reservation.setSeat(seat);
 
         if(!checkSeatValidity(reservation)) {
@@ -86,22 +93,31 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
+    public Reservation cancelReservation(Long id) {
+        Reservation reservation = getById(id);
+        reservation.setStatus(-1);
+        reservationRepository.save(reservation);
+        return reservation;
+    }
+
+    @Override
     public String activate(Reservation reservation) {
         LocalDateTime start = reservation.getStartingDateTime();
         LocalDateTime end = start.plusMinutes(90);
         LocalDateTime now = LocalDateTime.now();
+        String message = null;
 
-        if (reservation.getStatus()==-1) return "The reservation are already cancelled";
-        if (now.isBefore(start)) return "The reservation is not started yet";
+        if (reservation.getStatus()==-1) throw new RuntimeException("The reservation are already cancelled");
+        if (now.isBefore(start)) throw new RuntimeException("The reservation is not started yet");
         if (now.isAfter(end)) {
             if (reservation.getStatus()==0) {
                 reservation.setStatus(3);
                 reservationRepository.save(reservation);
-                return "The reservation is expired";
+                throw new RuntimeException("The reservation is expired");
             } else {
                 reservation.setStatus(2);
                 reservationRepository.save(reservation);
-                return "The reservation is finished";
+                return ("The reservation has been finished");
             }
         }
         else {
@@ -109,6 +125,25 @@ public class ReservationServiceImpl implements ReservationService {
             reservationRepository.save(reservation);
             return "The reservation has been activated";
         }
+
+//        if (reservation.getStatus()==-1) return "The reservation are already cancelled";
+//        if (now.isBefore(start)) return "The reservation is not started yet";
+//        if (now.isAfter(end)) {
+//            if (reservation.getStatus()==0) {
+//                reservation.setStatus(3);
+//                reservationRepository.save(reservation);
+//                return "The reservation is expired";
+//            } else {
+//                reservation.setStatus(2);
+//                reservationRepository.save(reservation);
+//                return "The reservation is finished";
+//            }
+//        }
+//        else {
+//            reservation.setStatus(1);
+//            reservationRepository.save(reservation);
+//            return "The reservation has been activated";
+//        }
     }
 
     @Override

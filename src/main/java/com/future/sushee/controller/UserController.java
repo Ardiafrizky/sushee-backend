@@ -2,6 +2,8 @@ package com.future.sushee.controller;
 
 import com.future.sushee.model.EnumRole;
 import com.future.sushee.model.User;
+import com.future.sushee.payload.request.ChangePasswordRequest;
+import com.future.sushee.payload.request.LoginRequest;
 import com.future.sushee.payload.request.SignupRequest;
 import com.future.sushee.payload.response.MessageResponse;
 import com.future.sushee.payload.response.UserResponse;
@@ -80,5 +82,10 @@ public class UserController {
     public UserResponse deleteUser(@PathVariable String username) {
         User user = userService.delete(userService.getUserByUsername(username));
         return userService.createUserResponse(user);
+    }
+
+    @PostMapping("/change-password")
+    public UserResponse changePassword(@Valid @RequestBody ChangePasswordRequest changePasswordRequest) {
+        return userService.changePassword(changePasswordRequest);
     }
 }

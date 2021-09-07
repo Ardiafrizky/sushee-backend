@@ -3,6 +3,7 @@ package com.future.sushee.service.implementations;
 import com.future.sushee.model.EnumRole;
 import com.future.sushee.model.Role;
 import com.future.sushee.model.User;
+import com.future.sushee.payload.request.ChangePasswordRequest;
 import com.future.sushee.payload.request.SignupRequest;
 import com.future.sushee.payload.response.JwtResponse;
 import com.future.sushee.payload.response.MessageResponse;
@@ -143,6 +144,17 @@ public class UserServiceImpl implements UserService {
 
         userRepository.save(user);
         return "User '"+ user.getUsername() + "' data successfully updated";
+    }
+
+    @Override
+    public UserResponse changePassword(ChangePasswordRequest changePasswordRequest) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(changePasswordRequest.getUsername(), changePasswordRequest.getPassword()));
+
+        User user = getUserByUsername(changePasswordRequest.getUsername());
+        user.setPassword(encoder.encode(changePasswordRequest.getNewPassword()));
+        userRepository.save(user);
+        return createUserResponse(user);
     }
     
     @Override
