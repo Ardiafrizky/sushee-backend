@@ -28,11 +28,14 @@ public class ReservationServiceImpl implements ReservationService {
     private final UserService userService;
     private final SeatService seatService;
 
-    @Value("${sushee.price}")
-    private static Integer price;
+//    @Value("${sushee.price}")
+//    private final Integer price;
+//
+//    @Value("${sushee.tax}")
+//    private final Float tax;
 
-    @Value("${sushee.tax}")
-    private static Float tax;
+    private final float tax = 0.1f;
+    private final int price = 200000;
 
     @Override
     public List<Reservation> getAllReservation() { return reservationRepository.findAll(); }
