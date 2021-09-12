@@ -16,6 +16,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.is;
@@ -57,7 +58,7 @@ public class AuthControllerTest {
 
     @Test
     public void registerUserTest() throws Exception {
-        when(userService.registerUser(ArgumentMatchers.any())).thenReturn(null);
+        when(userService.registerUser(ArgumentMatchers.any())).thenReturn(ResponseEntity.ok(null));
         mockMvc.perform(post("/api/auth/signup")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +

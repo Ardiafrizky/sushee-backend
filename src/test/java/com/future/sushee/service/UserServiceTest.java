@@ -93,6 +93,7 @@ public class UserServiceTest {
         when(authenticationManager.authenticate(ArgumentMatchers.any())).thenReturn(authentication);
         when(jwtUtils.generateJwtToken(ArgumentMatchers.any())).thenReturn("jwt");
         when(authentication.getPrincipal()).thenReturn(userDetails);
+        doReturn(user1).when(userService).getUserByUsername(ArgumentMatchers.anyString());
 
         JwtResponse result = userService.authenticateUser("name", "password");
         assertEquals(result.getClass(), JwtResponse.class);

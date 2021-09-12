@@ -112,6 +112,30 @@ public class MenuControllerTest {
     }
 
     @Test
+    public void upsertMenuSuccessTest() throws Exception {
+        when(menuService.updateMenuFromRequest(ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(menu1);
+        this.mockMvc.perform(MockMvcRequestBuilders.post("/api/menu/upsert/1")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content("{\n" +
+                "    \"name\": \"menu3\",\n" +
+                "    \"description\": \"desc3\",\n" +
+                "    \"unit\": \"pc\",\n" +
+                "    \"imageUrl\": \"url3\",\n" +
+                "    \"status\": 1\n" +
+                "}"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.message", is("Menu 'menu1' successfully updated (id: 1).")));
+    }
+
+    @Test
+    public void upsertMenuFailTest() throws Exception {
+        when(menuService.updateMenuFromRequest(ArgumentMatchers.any(), ArgumentMatchers.any())).thenThrow(new Exception());
+        this.mockMvc.perform(MockMvcRequestBuilders.post("/api/menu/upsert/1")
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isBadRequest());
+    }
+
+    @Test
     public void deleteMenuTest() throws Exception {
         when(menuService.delete(ArgumentMatchers.any())).thenReturn(null);
 

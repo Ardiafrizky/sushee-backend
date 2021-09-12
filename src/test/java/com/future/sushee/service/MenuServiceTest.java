@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 @Tag("service")
@@ -96,6 +97,22 @@ public class MenuServiceTest {
             assertEquals(result.getUnit(), menuCreationRequest.getUnit());
             assertEquals(result.getStatus(), menuCreationRequest.getStatus());
         } catch (Exception e) {}
+    }
+
+    @Test
+    public void updateMenuFromRequestTest() throws Exception {
+        MenuCreationRequest menuCreationRequest =
+            new MenuCreationRequest("menu name", "menu desc", "menu unit", "menu url", 1);
+
+        doReturn(new Menu()).when(menuService).getById(1L);
+        Menu result = menuService.updateMenuFromRequest(1L, menuCreationRequest);
+
+        verify(menuService).getById(1L);
+        assertEquals(result.getName(), menuCreationRequest.getName());
+        assertEquals(result.getDescription(), menuCreationRequest.getDescription());
+        assertEquals(result.getImageUrl(), menuCreationRequest.getImageUrl());
+        assertEquals(result.getUnit(), menuCreationRequest.getUnit());
+        assertEquals(result.getStatus(), menuCreationRequest.getStatus());
     }
 
     @Test

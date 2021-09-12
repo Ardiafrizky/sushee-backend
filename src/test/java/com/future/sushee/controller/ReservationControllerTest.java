@@ -141,6 +141,15 @@ public class ReservationControllerTest {
     }
 
     @Test
+    public void activateReservationExceptionTest() throws Exception {
+        when(reservationService.getById(1L)).thenThrow(RuntimeException.class);
+
+        this.mockMvc.perform(MockMvcRequestBuilders.get("/api/reservation/1/update-status")
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isInternalServerError());
+    }
+
+    @Test
     public void addReservationTest() throws Exception {
         when(reservationService.addFromRequest(ArgumentMatchers.any())).thenReturn(reservation1);
 
@@ -163,5 +172,24 @@ public class ReservationControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message", is("Reservation 1 successfully deleted")));
+    }
+
+    @Test
+    public void cancelReservationTest() throws Exception {
+        when(reservationService.cancelReservation(1L)).thenReturn(reservation1);
+        when(reservationService.createReservationResponse(reservation1)).thenReturn(reservationResponse1);
+
+        this.mockMvc.perform(MockMvcRequestBuilders.get("/api/reservation/1/cancel")
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk());
+    }
+
+    @Test
+    public void getPriceDetailTest() throws Exception {
+        this.mockMvc.perform(MockMvcRequestBuilders.get("/api/reservation/price-detail")
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.price", is(200000)))
+            .andExpect(jsonPath("$.tax", is(0.1)));
     }
 }

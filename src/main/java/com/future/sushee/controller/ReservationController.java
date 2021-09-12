@@ -11,6 +11,7 @@ import com.future.sushee.service.interfaces.ReservationService;
 import com.future.sushee.service.interfaces.SeatService;
 import com.future.sushee.service.interfaces.UserService;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/reservation")
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -30,14 +31,14 @@ public class ReservationController {
 
     private final ReservationService reservationService;
     private final EmailService emailService;
-    private final int price = 200000;
-    private final float tax = 0.1f;
+//    private final int price = 200000;
+//    private final float tax = 0.1f;
 
-//    @Value("${sushee.price}")
-//    public final int price;
-//
-//    @Value("${sushee.tax}")
-//    public final float tax;
+    @Value("${sushee.price}")
+    public int price;
+
+    @Value("${sushee.tax}")
+    public float tax;
 
     @GetMapping("")
     public List<ReservationResponse> getAllReservation() {

@@ -117,7 +117,7 @@ public class OrderServiceTest {
         OrderResponse response = orderService.createOrderResponse(order);
         assertEquals(response.getId(), order.getId());
         assertEquals(response.getAmount(), order.getAmount());
-        assertEquals(response.getMenu(), order.getMenu().getId());
+        assertEquals(response.getMenu(), order.getMenu());
         assertEquals(response.getReservation(), order.getReservation().getId());
         assertEquals(response.getStatus(), order.getStatus());
     }

@@ -9,6 +9,7 @@ import com.future.sushee.service.interfaces.ReservationService;
 import com.future.sushee.service.interfaces.SeatService;
 import com.future.sushee.service.interfaces.UserService;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,21 +22,18 @@ import java.util.Set;
 
 @Service
 @Transactional
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class ReservationServiceImpl implements ReservationService {
 
     private final ReservationRepository reservationRepository;
     private final UserService userService;
     private final SeatService seatService;
 
-//    @Value("${sushee.price}")
-//    private final Integer price;
-//
-//    @Value("${sushee.tax}")
-//    private final Float tax;
+    @Value("${sushee.price}")
+    private Integer price;
 
-    private final float tax = 0.1f;
-    private final int price = 200000;
+    @Value("${sushee.tax}")
+    private  Float tax;
 
     @Override
     public List<Reservation> getAllReservation() { return reservationRepository.findAll(); }

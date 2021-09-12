@@ -21,8 +21,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @Tag("service")
@@ -107,7 +106,7 @@ public class ReservationServiceTest {
         assertEquals(reservation1.getId(), result.getId());
         assertEquals(reservation1.getNumberOfPerson(), result.getNumberOfPerson());
         assertEquals(seat1.getNumber(), result.getSeat());
-        assertEquals(user1.getUuid(), result.getUser());
+        assertEquals(user1.getUsername(), result.getUser());
         assertEquals(reservation1.getStartingDateTime(), result.getStartingDateTime());
         assertEquals(reservation1.getStatus(), result.getStatus());
     }
@@ -159,17 +158,30 @@ public class ReservationServiceTest {
     public void activateTest() {
         String result = reservationService.activate(reservation2);
         verify(reservationRepository).save(ArgumentMatchers.any());
-        assertEquals(result, "The reservation has been activated successfully");
+        assertEquals(result, "The reservation has been activated");
 
         reservation2.setStartingDateTime(LocalDateTime.now().plusDays(1));
-        result = reservationService.activate(reservation2);
+        assertThrows(RuntimeException.class, () -> {
+            reservationService.activate(reservation2);
+        });
         verify(reservationRepository).save(ArgumentMatchers.any());
-        assertEquals(result, "The reservation is not started yet");
 
         reservation2.setStartingDateTime(LocalDateTime.now().minusDays(1));
-        result = reservationService.activate(reservation2);
-        verify(reservationRepository).save(ArgumentMatchers.any());
-        assertEquals(result, "The reservation is expired");
+        reservation2.setStatus(0);
+        assertThrows(RuntimeException.class, () -> {
+            reservationService.activate(reservation2);
+        });
+        verify(reservationRepository, times(2)).save(ArgumentMatchers.any());
+
+//        reservation2.setStartingDateTime(LocalDateTime.now().plusDays(1));
+//        result = reservationService.activate(reservation2);
+//        verify(reservationRepository).save(ArgumentMatchers.any());
+//        assertEquals(result, "The reservation is not started yet");
+//
+//        reservation2.setStartingDateTime(LocalDateTime.now().minusDays(1));
+//        result = reservationService.activate(reservation2);
+//        verify(reservationRepository).save(ArgumentMatchers.any());
+//        assertEquals(result, "The reservation is expired");
     }
 
 
